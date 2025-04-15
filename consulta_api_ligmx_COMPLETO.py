@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager  # 👈 esta línea es nueva
 import requests
 import pandas as pd
 import re
@@ -11,8 +12,12 @@ import time
 # 1. Scraping LIGA MX WEB
 # -----------------------
 options = Options()
-# options.add_argument("--headless")
-service = Service("C:/Users/P.QUINTANA/Documents/CHROMEDRIVER/chromedriver.exe")
+options.add_argument("--headless")  # 👈 obligatorio en Render
+options.add_argument("--no-sandbox")  # 👈 recomendado para servidores Linux
+options.add_argument("--disable-dev-shm-usage")  # 👈 mejora estabilidad
+
+# 👇 esta línea descarga automáticamente el driver correcto
+service = Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=service, options=options)
 
 driver.get("https://ligamx.net/cancha/marcadores")

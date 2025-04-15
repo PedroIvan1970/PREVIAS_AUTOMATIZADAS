@@ -1,16 +1,32 @@
+import os
+import zipfile
+import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager  # 👈 esta línea es nueva
-import requests
-import pandas as pd
-import re
-import time
+from webdriver_manager.chrome import ChromeDriverManager
+
+def descargar_chrome():
+    url = "https://storage.googleapis.com/chrome-for-testing-public/121.0.6167.85/linux64/chrome-linux64.zip"
+    ruta_destino = "/tmp/chrome"
+    os.makedirs(ruta_destino, exist_ok=True)
+
+    zip_path = os.path.join(ruta_destino, "chrome.zip")
+    if not os.path.exists(os.path.join(ruta_destino, "chrome-linux64", "chrome")):
+        r = requests.get(url)
+        with open(zip_path, "wb") as f:
+            f.write(r.content)
+
+        with zipfile.ZipFile(zip_path, "r") as zip_ref:
+            zip_ref.extractall(ruta_destino)
+
+    return os.path.join(ruta_destino, "chrome-linux64", "chrome")
+
 
 # -----------------------
 # 1. Scraping LIGA MX WEB
 # -----------------------
+chrome_path = descargar_chrome()
 options = Options()
 options.add_argument("--headless")  # 👈 obligatorio en Render
 options.add_argument("--no-sandbox")  # 👈 recomendado para servidores Linux

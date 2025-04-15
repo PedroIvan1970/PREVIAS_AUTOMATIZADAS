@@ -6,13 +6,16 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
+
 def descargar_chrome():
     url = "https://storage.googleapis.com/chrome-for-testing-public/121.0.6167.85/linux64/chrome-linux64.zip"
     ruta_destino = "/tmp/chrome"
     os.makedirs(ruta_destino, exist_ok=True)
 
     zip_path = os.path.join(ruta_destino, "chrome.zip")
-    if not os.path.exists(os.path.join(ruta_destino, "chrome-linux64", "chrome")):
+    chrome_bin = os.path.join(ruta_destino, "chrome-linux64", "chrome")
+
+    if not os.path.exists(chrome_bin):
         r = requests.get(url)
         with open(zip_path, "wb") as f:
             f.write(r.content)
@@ -20,14 +23,16 @@ def descargar_chrome():
         with zipfile.ZipFile(zip_path, "r") as zip_ref:
             zip_ref.extractall(ruta_destino)
 
-    return os.path.join(ruta_destino, "chrome-linux64", "chrome")
+    return chrome_bin
 
 
 # -----------------------
 # 1. Scraping LIGA MX WEB
 # -----------------------
 chrome_path = descargar_chrome()
+
 options = Options()
+options.binary_location = chrome_path  # ✅ Aquí se usa el binario descargado
 options.add_argument("--headless")  # 👈 obligatorio en Render
 options.add_argument("--no-sandbox")  # 👈 recomendado para servidores Linux
 options.add_argument("--disable-dev-shm-usage")  # 👈 mejora estabilidad
@@ -35,6 +40,7 @@ options.add_argument("--disable-dev-shm-usage")  # 👈 mejora estabilidad
 # 👇 esta línea descarga automáticamente el driver correcto
 service = Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=service, options=options)
+
 
 driver.get("https://ligamx.net/cancha/marcadores")
 time.sleep(7)

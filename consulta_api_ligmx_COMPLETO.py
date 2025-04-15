@@ -33,7 +33,7 @@ chrome_path = descargar_chrome()
 
 options = Options()
 options.binary_location = chrome_path  # ✅ Aquí se usa el binario descargado
-options.add_argument("--headless")  # 👈 obligatorio en Render
+options.add_argument("--headless=new")  # ✅ Requiere Chromium reciente (que tú ya usas)
 options.add_argument("--no-sandbox")  # 👈 recomendado para servidores Linux
 options.add_argument("--disable-dev-shm-usage")  # 👈 mejora estabilidad
 

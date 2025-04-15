@@ -1,15 +1,18 @@
 from flask import Flask, jsonify
-import subprocess
 import json
+import subprocess
 
 app = Flask(__name__)
 
+# ✅ Ejecuta el script UNA SOLA VEZ al iniciar el servidor
+subprocess.run(["python", "consulta_api_ligmx_COMPLETO.py"], check=True)
+
 @app.route("/ligamx/notas")
 def obtener_notas():
-    # Ejecuta el script completo (asegúrate que este nombre sea correcto en tu repo)
-    subprocess.run(["python", "consulta_api_ligmx_COMPLETO.py"], check=True)
+    try:
+        with open("notas_ligamx.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
-    # Lee el JSON generado
-    with open("notas_ligamx.json", "r", encoding="utf-8") as f:
-        data = json.load(f)
-    return jsonify(data)

@@ -4,4 +4,4 @@ requests
 gunicorn
 selenium
 webdriver-manager
-undetected-chromedriver
+
